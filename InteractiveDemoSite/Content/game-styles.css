@@ -1,0 +1,5 @@
+﻿body {
+}
+div[data-game-row] {
+    min-height : 2em;
+}
