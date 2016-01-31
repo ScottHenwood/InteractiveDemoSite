@@ -2,40 +2,44 @@
 
 class Player {
     private _id: number;
-    private _possision: number;
+    private _position: number;
     constructor(id : number) {
         this._id = id;
-        this._possision = 6;
+        this._position = 6;
         $('div[data-game-row="home"').append('<div class="game-actor col-xs-1" data-game-player="1">Player</div>');
     }
 
     private playerElement() : JQuery {
-        return $("div[data-game-player=" + this._id + "]");
+        return $('div[data-game-player="' + this._id + '"]');
+    }
+
+    getPosition() {
+        return this._position;
     }
 
     place() {
-        this.playerElement().addClass("col-md-offset-" + this._possision);
+        this.playerElement().addClass("col-md-offset-" + this._position);
     }
     clean() {
-        this.playerElement().removeClass("col-md-offset-" + this._possision);
+        this.playerElement().removeClass("col-md-offset-" + this._position);
     }
 
     left() {
-        if (this._possision > 0) {
+        if (this._position > 0) {
             this.clean();
-            this._possision -= 1;
+            this._position -= 1;
             this.place();
         }
     }
     right() {
-        if (this._possision < 11) {
+        if (this._position < 11) {
             this.clean();
-            this._possision += 1;
+            this._position += 1;
             this.place();
         }
     }
     fire() {
-        $('div[data-game-row="weapon"').append('<div data-game-projectile data-game-possision="' + this._possision + '">^$^</div>');   
+        return $('div[data-game-row="weapon"]').append('<div data-game-projectile data-game-position="' + this._position + '">^$^</div>');   
     }
 }
 
@@ -80,8 +84,8 @@ class Game {
             $('div[data-game-row="' + row + '"]').append(element);
         });
 
-        var projectilePossision = + $('div[data-game-row="weapon"] > div[data-game-projectile]').attr("data-game-possision");
-        $('div[data-game-row="weapon"] > div[data-game-projectile]').addClass('col-md-offset-' + projectilePossision);
+        var projectileposition = + $('div[data-game-row="weapon"] > div[data-game-projectile]').attr("data-game-position");
+        $('div[data-game-row="weapon"] > div[data-game-projectile]').addClass('col-md-offset-' + projectileposition);
         this._gameRows.getLastRow().append($('div[data-game-row="weapon"] > div[data-game-projectile]'));
 
         this.checkForCollisions();
@@ -102,7 +106,7 @@ class Game {
 
     checkForCollisions() {
         $('div[data-game-projectile]').each(function (index, element: Element) {
-            var possibleBadGuy = $(element).parent().children('[data-game-badguy]').filter('[data-game-possision="' + $(element).attr("data-game-possision") + '"]');
+            var possibleBadGuy = $(element).parent().children('[data-game-badguy]').filter('[data-game-position="' + $(element).attr("data-game-position") + '"]');
             if (possibleBadGuy.length > 0) {
                 // point score!
                 possibleBadGuy.remove();
@@ -128,8 +132,8 @@ class Game {
     }
 
     createBadGuy() {
-        var possision = Math.round((Math.random() * 10) + 1) % 11;
-        this._gameRows.getTopRow().append('<button data-game-badguy data-game-possision="' + possision + '" class="col-md-offset-' + possision + '">&!&</button>');
+        var position = Math.round((Math.random() * 10) + 1) % 11;
+        this._gameRows.getTopRow().append('<button data-game-badguy data-game-position="' + position + '" class="col-md-offset-' + position + '">&!&</button>');
     }
 }
 
@@ -145,15 +149,15 @@ $(document).ready(function () {
     $("#container").focus();
     $("#container").keypress(function (pressEvent) {
         
-        if (pressEvent.key == 'a') {
+        if (pressEvent.charCode == 97) {
             //window.alert("left");
             player.left();
         }
-        if (pressEvent.key == 'd') {
+        if (pressEvent.charCode == 100) {
             //window.alert("right");
             player.right();
         }
-        if (pressEvent.key == ' ') {
+        if (pressEvent.charCode == 32) {
             //window.alert("FIRE");
             player.fire();
         }
