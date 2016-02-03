@@ -1,12 +1,49 @@
 ﻿declare var $: JQueryStatic;
 
+class LifeTracker {
+    private _currentValue: number;
+    constructor(containingElement: JQuery) {
+        this._currentValue = 100;
+        containingElement.append('<div class="progress-bar progress-bar-success" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-game-lifetracker></div>');
+        this.ensureState();
+    }
+
+    private trackingElement(): JQuery {
+        return $('div[data-game-lifetracker]');
+    }
+
+    private ensureState() {
+        this.trackingElement().removeClass("progress-bar-success progress-bar-warning progress-bar-danger");
+        this.trackingElement().attr("aria-valuenow", this._currentValue);
+        this.trackingElement().css({ width: this._currentValue + "%" });
+        this.trackingElement().text(this._currentValue + "%");
+        if (this._currentValue > 70) {
+            this.trackingElement().addClass("progress-bar-success");
+        }
+        else if (this._currentValue > 30) {
+            this.trackingElement().addClass("progress-bar-warning");
+        }
+        else {
+            this.trackingElement().addClass("progress-bar-danger");
+        }
+    }
+
+    public subtractLife(value: number) {
+        this._currentValue -= value;
+        this.ensureState();
+    }
+}
+
 class Player {
     private _id: number;
     private _position: number;
+    private _lifeTracker: LifeTracker;
+
     constructor(id : number) {
         this._id = id;
         this._position = 6;
         $('div[data-game-row="home"').append('<div class="game-actor col-xs-1" data-game-player="1">Player</div>');
+        this._lifeTracker = new LifeTracker(this.playerElement());
     }
 
     private playerElement() : JQuery {
@@ -41,6 +78,10 @@ class Player {
     fire() {
         return $('div[data-game-row="weapon"]').append('<div data-game-projectile data-game-position="' + this._position + '">^$^</div>');   
     }
+
+    hit() {
+        this._lifeTracker.subtractLife(10);
+    }
 }
 
 class GameRows {
@@ -67,9 +108,13 @@ class GameRows {
 }
 
 class Game {
+    private _player: Player;
     private _gameRows: GameRows;
     constructor() {
         this._gameRows = new GameRows(12);
+
+        this._player = new Player(1);
+        this._player.place();
     }
     playRound() {
         // remove out of play projectiles
@@ -118,7 +163,8 @@ class Game {
     checkHealth() {
         var badToEnd = this._gameRows.getLastRow().children('[data-game-badguy]').length;
         if (badToEnd > 0) {
-            alert("You died");
+            //alert("You died");
+            this._player.hit();
             this._gameRows.getLastRow().children('[data-game-badguy]').remove();
         }
         
@@ -135,6 +181,23 @@ class Game {
         var position = Math.round((Math.random() * 10) + 1) % 11;
         this._gameRows.getTopRow().append('<button data-game-badguy data-game-position="' + position + '" class="col-md-offset-' + position + '">&!&</button>');
     }
+
+    playEvent(pressEvent: JQueryKeyEventObject) {
+        if (pressEvent.charCode == 97) {
+            //window.alert("left");
+            this._player.left();
+        }
+        if (pressEvent.charCode == 100) {
+            //window.alert("right");
+            this._player.right();
+        }
+        if (pressEvent.charCode == 32) {
+            //window.alert("FIRE");
+            this._player.fire();
+        }
+        this.playRound();
+        //$("#container").append(pressEvent.keyCode.toString());
+    }
 }
 
 $(document).ready(function () {
@@ -143,25 +206,12 @@ $(document).ready(function () {
     //var gameRows = new GameRows(12);
     var game = new Game();
 
-    var player = new Player(1);
-    player.place();
+    
     game.createBadGuy();
     $("#container").focus();
     $("#container").keypress(function (pressEvent) {
+        game.playEvent(pressEvent);
         
-        if (pressEvent.charCode == 97) {
-            //window.alert("left");
-            player.left();
-        }
-        if (pressEvent.charCode == 100) {
-            //window.alert("right");
-            player.right();
-        }
-        if (pressEvent.charCode == 32) {
-            //window.alert("FIRE");
-            player.fire();
-        }
-        game.playRound();
         //$("#container").append(pressEvent.keyCode.toString());
         $("#container").focus();
     });
