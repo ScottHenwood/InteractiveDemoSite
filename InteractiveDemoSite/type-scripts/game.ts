@@ -44,7 +44,6 @@ class Player {
         this._position = 6;
         $('div[data-game-row="home"').append('<div class="game-actor col-xs-1" data-game-player="1">Player</div>');
         this._lifeTracker = new LifeTracker(this.playerElement());
-        this.playerElement().append('<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>');
     }
 
     private playerElement() : JQuery {
