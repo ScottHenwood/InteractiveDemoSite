@@ -1,7 +1,13 @@
 ﻿@{
     ViewBag.Title = "About";
 }
+@Styles.Render("~/Content/GameFramwork.css")
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
 
-<p>Use this area to provide additional information.</p>
+<div id="container" class="container" data-game-container tabindex="1">
+
+</div>
+@section scripts { 
+    @Scripts.Render("~/type-scripts/game.js");
+}
