@@ -22,7 +22,7 @@ namespace InteractiveDemoSite.Controllers
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "If you can find me.";
+            ViewBag.Message = "If you wish to contact me, try my email.";
 
             return View();
         }
