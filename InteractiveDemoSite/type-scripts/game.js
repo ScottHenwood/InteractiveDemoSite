@@ -27,7 +27,7 @@ var LifeTracker = (function () {
         this.ensureState();
     };
     return LifeTracker;
-})();
+}());
 var Player = (function () {
     function Player(id) {
         this._id = id;
@@ -68,7 +68,7 @@ var Player = (function () {
         this._lifeTracker.subtractLife(10);
     };
     return Player;
-})();
+}());
 var GameRows = (function () {
     function GameRows(_numberOfRows) {
         this._numberOfRows = _numberOfRows;
@@ -90,7 +90,7 @@ var GameRows = (function () {
         return $('div[data-game-row="1"]');
     };
     return GameRows;
-})();
+}());
 var Game = (function () {
     function Game() {
         this._gameRows = new GameRows(12);
@@ -166,7 +166,7 @@ var Game = (function () {
         //$("#container").append(pressEvent.keyCode.toString());
     };
     return Game;
-})();
+}());
 $(document).ready(function () {
     //$("div[data-game-player]").addClass("col-md-offset-6");
     //var gameRows = new GameRows(12);

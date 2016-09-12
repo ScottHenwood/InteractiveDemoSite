@@ -13,7 +13,7 @@ namespace InteractiveDemoSite.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult SpaceInvaders()
         {
             ViewBag.Message = "Look around, or play a game?";
 
@@ -24,6 +24,11 @@ namespace InteractiveDemoSite.Controllers
         {
             ViewBag.Message = "If you wish to contact me, try my email.";
 
+            return View();
+        }
+
+        public ActionResult PastWork()
+        {
             return View();
         }
     }
